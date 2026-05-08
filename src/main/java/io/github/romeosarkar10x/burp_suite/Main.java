@@ -1,17 +1,24 @@
 package io.github.romeosarkar10x.burp_suite;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
+import burp.api.montoya.BurpExtension;
+import burp.api.montoya.MontoyaApi;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
-        }
+public class Main implements BurpExtension {
+
+    @Override
+    public void initialize(MontoyaApi api) {
+        // Set the extension name shown in Burp's Extensions tab
+        api.extension().setName("request-sentinel");
+
+        // Log to the extension's Output tab
+        api.logging().logToOutput("========================================");
+        api.logging().logToOutput("  Hello World Extension Loaded!");
+        api.logging().logToOutput("  Burp Suite version: " + api.burpSuite().version().toString());
+        api.logging().logToOutput("========================================");
+
+        // Register an unload handler (cleanup when extension is removed)
+        api.extension().registerUnloadingHandler(() -> {
+            api.logging().logToOutput("Goodbye! Extension unloaded.");
+        });
     }
 }
